@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, Platform } from 'react-native';
 
 interface GameHeaderProps {
   currentFood: any;
@@ -33,7 +33,7 @@ export default function GameHeader({ currentFood, showAnswer, round, score }: Ga
 }
 
 const styles = StyleSheet.create({
-  header: { height: '38%', backgroundColor: '#fff', elevation: 4, zIndex: 1 },
+  header: { height: '38%', backgroundColor: '#fff', zIndex: 1, marginTop: Platform.OS === 'android' ? 25 : 0, }, 
   foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd' }, 
   infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
   textRow: { alignItems: 'center', marginBottom: 5 },
