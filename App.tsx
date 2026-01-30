@@ -10,6 +10,7 @@ import { calculateDistance, calculatePoints } from './src/utils/scoring';
 import MenuScreen from './src/components/MenuScreen';
 import GameHeader from './src/components/GameHeader';
 import GameMap from './src/components/GameMap';
+import GameTimer from './src/components/Timer';
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -124,6 +125,11 @@ export default function App() {
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
 
+        <GameTimer 
+          duration={60} 
+          isActive={!showAnswer} 
+          onTimeUp={submitAnswer} 
+        />
         <GameHeader 
           currentFood={currentFood}
           showAnswer={showAnswer}
