@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, SafeAreaView, Alert, Animated } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { getRandomFoods, GameMode } from './data/foods';
-import { calculateDistance, calculatePoints } from './utils/scoring';
+import { Ionicons } from '@expo/vector-icons';
+
+import { getRandomFoods, GameMode } from './src/data/foods';
+import { calculateDistance, calculatePoints } from './src/utils/scoring';
+
+import MenuScreen from './src/components/MenuScreen';
+import GameHeader from './src/components/GameHeader';
+import GameMap from './src/components/GameMap';
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -14,21 +19,10 @@ export default function App() {
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
-  const titleScale = useRef(new Animated.Value(0)).current; 
+  
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
-
   const currentFood = foods[round];
 
-  useEffect(() => {
-    if (!gameStarted) {
-      Animated.spring(titleScale, {
-        toValue: 1,
-        friction: 4,
-        tension: 40,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [gameStarted]);
   useEffect(() => {
     if (!showAnswer && selectedLocation) {
       Animated.timing(buttonOpacity, {
@@ -96,89 +90,54 @@ export default function App() {
     setFoods(getRandomFoods(gameMode, 5));
   };
 
+  const handleExitGame = () => {
+    Alert.alert(
+      "Wyjście z gry",
+      "Czy na pewno chcesz wrócić do menu? Stracisz obecny wynik.",
+      [
+        { text: "Anuluj", style: "cancel" },
+        { 
+          text: "Wychodzę", 
+          style: "destructive", 
+          onPress: resetGame 
+        }
+      ]
+    );
+  };
+
+  // ekran menu
   if (!gameStarted) {
     return (
-      <View style={styles.menu}>
-        <Animated.View style={{ transform: [{ scale: titleScale }] }}>
-          <Text style={styles.title}>Food Origin Game</Text>
-        </Animated.View>
-        
-        <Text style={styles.subtitle}>Wybierz tryb gry:</Text>
-        
-        <View style={styles.modeContainer}>
-          <TouchableOpacity 
-            style={[styles.modeButton, gameMode === 'europe' && styles.modeButtonActive]} 
-            onPress={() => setGameMode('europe')}
-          >
-            <Text style={[styles.modeText, gameMode === 'europe' && styles.modeTextActive]}>EUROPA</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.modeButton, gameMode === 'world' && styles.modeButtonActive]} 
-            onPress={() => setGameMode('world')}
-          >
-            <Text style={[styles.modeText, gameMode === 'world' && styles.modeTextActive]}>ŚWIAT</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.mainButton} onPress={startGame}>
-          <Text style={styles.buttonText}>ROZPOCZNIJ GRĘ</Text>
-        </TouchableOpacity>
-      </View>
+      <MenuScreen 
+        gameMode={gameMode} 
+        setGameMode={setGameMode} 
+        onStartGame={startGame} 
+      />
     );
   }
 
+  // ekran gry
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Image 
-            source={{ uri: `https://tse2.mm.bing.net/th?q=${encodeURIComponent(currentFood.imageQuery)}&w=800&h=600` }} 
-            style={styles.foodImage}
-            resizeMode="cover"
-          />
-          
-          <View style={styles.infoBox}>
-            <View style={styles.textRow}>
-               <Text style={styles.foodText}>
-                 {showAnswer ? `${currentFood.name} (${currentFood.country})` : "Co to za potrawa?"}
-               </Text>
-            </View>
-            <View style={styles.statsRow}>
-              <Text style={styles.statsText}>Runda: {round + 1}/5</Text>
-              <Text style={styles.scoreText}>Punkty: {score}</Text>
-            </View>
-          </View>
-        </View>
+        <TouchableOpacity style={styles.exitButton} onPress={handleExitGame}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </TouchableOpacity>
 
-        <MapView
-          style={styles.map}
-          onPress={handleMapPress}
-          initialRegion={{
-            latitude: gameMode === 'europe' ? 52 : 20,
-            longitude: gameMode === 'europe' ? 19 : 0,
-            latitudeDelta: gameMode === 'europe' ? 40 : 100,
-            longitudeDelta: gameMode === 'europe' ? 40 : 100,
-          }}
-        >
-          {selectedLocation && <Marker coordinate={selectedLocation} pinColor="orange" />}
-          {showAnswer && (
-            <>
-              <Marker 
-                coordinate={{ latitude: currentFood.coordinates[1], longitude: currentFood.coordinates[0] }} 
-                pinColor="green" 
-              />
-              <Polyline 
-                coordinates={[
-                  selectedLocation,
-                  { latitude: currentFood.coordinates[1], longitude: currentFood.coordinates[0] }
-                ]}
-                strokeWidth={3}
-                strokeColor="black"
-              />
-            </>
-          )}
-        </MapView>
+        <GameHeader 
+          currentFood={currentFood}
+          showAnswer={showAnswer}
+          round={round}
+          score={score}
+        />
+
+        <GameMap 
+          gameMode={gameMode}
+          onMapPress={handleMapPress}
+          selectedLocation={selectedLocation}
+          showAnswer={showAnswer}
+          currentFood={currentFood}
+        />
 
         {!showAnswer && selectedLocation && (
           <Animated.View style={[styles.overlay, { opacity: buttonOpacity }]}>
@@ -194,30 +153,21 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  menu: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8f9fa' },
-  title: { fontSize: 36, fontWeight: 'bold', color: '#ff6b00', marginBottom: 10, textAlign: 'center' },
-  subtitle: { fontSize: 18, color: '#666', marginBottom: 20 },
-  modeContainer: { flexDirection: 'row', marginBottom: 40, backgroundColor: '#eee', borderRadius: 25, padding: 5 },
-  modeButton: { paddingVertical: 12, paddingHorizontal: 30, borderRadius: 20 },
-  modeButtonActive: { backgroundColor: '#ff6b00' },
-  modeText: { fontSize: 16, fontWeight: '600', color: '#666' },
-  modeTextActive: { color: '#fff' },
-
-  header: { height: '38%', backgroundColor: '#fff', elevation: 4, zIndex: 1 },
-  foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd' }, 
-  
-  infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
-  textRow: { alignItems: 'center', marginBottom: 5 },
-  foodText: { fontSize: 22, fontWeight: 'bold', color: '#333' },
-  
-  statsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },
-  statsText: { fontSize: 16, color: '#666' },
-  scoreText: { fontSize: 16, color: '#ff6b00', fontWeight: 'bold' },
-  
-  map: { flex: 1 },
   overlay: { position: 'absolute', bottom: 40, alignSelf: 'center' },
-  
-  mainButton: { backgroundColor: '#ff6b00', paddingVertical: 15, paddingHorizontal: 50, borderRadius: 30, elevation: 5 },
   confirmButton: { backgroundColor: '#000', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, elevation: 5 },
-  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' }
+  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  exitButton: {
+    position: 'absolute',
+    top: 50, 
+    left: 20,
+    zIndex: 100, 
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+    padding: 10,
+    borderRadius: 20,
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }
 });
