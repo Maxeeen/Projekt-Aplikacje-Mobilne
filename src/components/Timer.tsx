@@ -68,13 +68,14 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 20,
         paddingTop: 10,
-        flexDirection: 'column', 
+        flexDirection: 'column-reverse', 
         gap: 5,
     },
     textRow: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         alignItems: 'center',
+        paddingBottom: 6,
         gap: 8,
     },
     timeText: {

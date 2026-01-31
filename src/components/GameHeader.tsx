@@ -33,12 +33,12 @@ export default function GameHeader({ currentFood, showAnswer, round, score }: Ga
 }
 
 const styles = StyleSheet.create({
-  header: { height: '38%', backgroundColor: '#fff', zIndex: 1, }, 
+  header: { height: '38%', backgroundColor: '#E8E4BC', zIndex: 1, }, 
   foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd' }, 
   infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
   textRow: { alignItems: 'center', marginBottom: 5 },
-  foodText: { fontSize: 22, fontWeight: 'bold', color: '#333' },
+  foodText: { fontSize: 22, fontWeight: 'bold', color: '#4A5284' },
   statsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },
-  statsText: { fontSize: 16, color: '#666' },
-  scoreText: { fontSize: 16, color: '#ff6b00', fontWeight: 'bold' },
+  statsText: { fontSize: 16, color: '#77718C' },
+  scoreText: { fontSize: 16, color: '#C1908D', fontWeight: 'bold' },
 });

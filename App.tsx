@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ArrowLeft } from 'lucide-react-native';
+import { ChevronLeft, Lightbulb } from 'lucide-react-native';
 
 import { getRandomFoods, GameMode } from './src/data/foods';
 import { calculateDistance, calculatePoints } from './src/utils/scoring';
@@ -120,6 +120,10 @@ export default function App() {
       ]
     );
   };
+  const handleHintPress = () => {
+    // jakoś rozdzielić ShowAnswer żeby pokazywał tylko nazwę potrawy, albo dodać nową funkcję?
+    Alert.alert("Podpowiedź", `Ta potrawa nazwya się: ${currentFood.name}`);
+  }
 
   if (!gameStarted) {
     return (
@@ -136,7 +140,11 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         
         <TouchableOpacity style={styles.exitButton} onPress={handleExitGame}>
-          <ArrowLeft size={24} color="#333" />
+          <ChevronLeft size={24} color="#4A5284" />
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+          <Lightbulb size={24} color="#4A5284" />
         </TouchableOpacity>
 
      
@@ -174,21 +182,37 @@ export default function App() {
   );
 }
 
+// Jak zmienić kolor tła obrazkaヾ(•ω•`)o?
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#E8E4BC', paddingTop: Platform.OS === 'android' ? 30 : 0  },
   overlay: { position: 'absolute', bottom: 40, alignSelf: 'center' },
-  confirmButton: { backgroundColor: '#000', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, elevation: 5 },
-  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  confirmButton: { backgroundColor: '#77718C', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, elevation: 5 },
+  buttonText: { color: '#F1DCC3', fontSize: 18, fontWeight: 'bold' },
   exitButton: {
     position: 'absolute',
     top: 60,
-    left: 20,
+    left: 15,
     zIndex: 100, 
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+    backgroundColor: '#CFA282', 
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 30,
     elevation: 5, 
     shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  // czy dałoby się zamiast duplikować i zmieniać tylko left na right to jakoś uprościć?
+  hintButton: {
+    position: 'absolute',
+    top: 60,
+    right: 15,
+    zIndex: 100, 
+    backgroundColor: '#CFA282',
+    padding: 10,
+    borderRadius: 30,
+    elevation: 5, 
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
