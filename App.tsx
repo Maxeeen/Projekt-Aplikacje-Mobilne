@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
+import { ArrowLeft } from 'lucide-react-native';
 
 import { getRandomFoods, GameMode } from './src/data/foods';
 import { calculateDistance, calculatePoints } from './src/utils/scoring';
@@ -11,6 +11,8 @@ import MenuScreen from './src/components/MenuScreen';
 import GameHeader from './src/components/GameHeader';
 import GameMap from './src/components/GameMap';
 import GameTimer from './src/components/Timer';
+
+const ROUND_DURATION = 15;
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -56,6 +58,15 @@ export default function App() {
     setSelectedLocation(e.nativeEvent.coordinate);
   };
 
+ 
+  const handleTimeOut = () => {
+    setShowAnswer(true);
+    setTimeout(() => {
+        nextRound(0);
+    }, 2500);
+  };
+
+ 
   const submitAnswer = async () => {
     if (!selectedLocation) return;
 
@@ -70,16 +81,20 @@ export default function App() {
     await playSound();
 
     setTimeout(() => {
-      if (round < 4) {
-        setRound(r => r + 1);
-        setSelectedLocation(null);
-        setShowAnswer(false);
-      } else {
-        Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + points} pkt`, [
-          { text: "Zagraj ponownie", onPress: resetGame }
-        ]);
-      }
+        nextRound(points);
     }, 2500);
+  };
+
+  const nextRound = (pointsLastRound: number) => {
+    if (round < 4) {
+      setRound(r => r + 1);
+      setSelectedLocation(null);
+      setShowAnswer(false);
+    } else {
+      Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
+        { text: "Zagraj ponownie", onPress: resetGame }
+      ]);
+    }
   };
 
   const resetGame = () => {
@@ -106,7 +121,6 @@ export default function App() {
     );
   };
 
-  // ekran menu
   if (!gameStarted) {
     return (
       <MenuScreen 
@@ -117,19 +131,22 @@ export default function App() {
     );
   }
 
-  // ekran gry
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
+        
         <TouchableOpacity style={styles.exitButton} onPress={handleExitGame}>
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <ArrowLeft size={24} color="#333" />
         </TouchableOpacity>
 
+     
         <GameTimer 
-          duration={60} 
+          key={round} 
+          duration={ROUND_DURATION} 
           isActive={!showAnswer} 
-          onTimeUp={submitAnswer} 
+          onTimeUp={handleTimeOut} 
         />
+
         <GameHeader 
           currentFood={currentFood}
           showAnswer={showAnswer}
@@ -164,7 +181,7 @@ const styles = StyleSheet.create({
   buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   exitButton: {
     position: 'absolute',
-    top: 50, 
+    top: 60,
     left: 20,
     zIndex: 100, 
     backgroundColor: 'rgba(255, 255, 255, 0.9)', 

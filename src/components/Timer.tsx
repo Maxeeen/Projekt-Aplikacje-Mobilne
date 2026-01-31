@@ -1,6 +1,6 @@
-import {Timer} from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
+import { Timer } from 'lucide-react-native'; 
 
 interface TimerProps {
     duration: number;
@@ -11,89 +11,86 @@ interface TimerProps {
 export default function GameTimer({ duration, onTimeUp, isActive }: TimerProps) {
     const [timeLeft, setTimeLeft] = useState(duration);
 
+   
     useEffect(() => {
         setTimeLeft(duration);
     }, [duration]);
 
     useEffect(() => {
         if (!isActive) return;
+        if (timeLeft === 0) return;
 
-        if (timeLeft <= 0) {
-            onTimeUp();
-            return;
-        }
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(timer);
+        const intervalId = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(intervalId);
+                    onTimeUp(); 
                     return 0;
                 }
-                return prev - 1;
+                return prevTime - 1;
             });
         }, 1000);
 
-        return () => clearInterval(timer);
-    }, [isActive, timeLeft, onTimeUp]);
+        return () => clearInterval(intervalId);
+    }, [isActive, onTimeUp]); 
 
     const percentage = (timeLeft / duration) * 100;
-    const isLow = timeLeft <=10;
+    
+    const isLow = timeLeft <= 10;
+    const barColor = isLow ? '#ef4444' : '#10b981'; 
 
     return (
-    <View style={styles.container}>
-      <View style={styles.textColumn}>
-        <Text style={styles.label}>Czas</Text>
-        <Text style={[styles.timeText, isLow && { color: '#dc2626' }]}>
-          {timeLeft}s
-        </Text>
-      </View>
+        <View style={styles.container}>
+            <View style={styles.textRow}>
+                <Timer size={20} color="#4b5563" />
+                <Text style={[styles.timeText, isLow && { color: '#ef4444' }]}>
+                    {timeLeft}s
+                </Text>
+            </View>
 
-      <View style={styles.progressBarContainer}>
-        <View 
-          style={[
-            styles.progressBarFill, 
-            { 
-                width: `${percentage}%`,
-                backgroundColor: isLow ? '#dc2626' : '#10b981',
-            }
-          ]} 
-        />
-      </View>
-    </View>
-  );
+            <View style={styles.progressBarContainer}>
+                <View 
+                    style={[
+                        styles.progressBarFill, 
+                        { 
+                            width: `${percentage}%`,
+                            backgroundColor: barColor,
+                        }
+                    ]} 
+                />
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: Platform.OS === 'android' ? 25 : 0,
-    flexDirection: 'row', 
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: 12,
-    padding: 10,
-    borderRadius: 12,
-  },
-  textColumn: {
-    flexDirection: 'column', 
-    gap: 2,
-  },
-  label: {
-    fontSize: 12, 
-    color: '#4b5563', 
-  },
-  timeText: {
-    fontSize: 24, 
-    fontWeight: 'bold', 
-    fontVariant: ['tabular-nums'], 
-  },
-  progressBarContainer: {
-    height: 8,
-    width: 120,
-    backgroundColor: '#e5e7eb', 
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginLeft: 10, 
-  },
-  progressBarFill: {
-    height: '100%',
-  }
+    container: {
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+        flexDirection: 'column', 
+        gap: 5,
+    },
+    textRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 8,
+    },
+    timeText: {
+        fontSize: 18, 
+        fontWeight: 'bold', 
+        fontVariant: ['tabular-nums'],
+        color: '#4b5563',
+    },
+    progressBarContainer: {
+        height: 6,
+        width: '100%',
+        backgroundColor: '#e5e7eb', 
+        borderRadius: 4,
+        overflow: 'hidden',
+    },
+    progressBarFill: {
+        height: '100%',
+    }
 });

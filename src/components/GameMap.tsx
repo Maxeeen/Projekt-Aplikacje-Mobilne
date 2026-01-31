@@ -12,10 +12,17 @@ interface GameMapProps {
 }
 
 export default function GameMap({ gameMode, onMapPress, selectedLocation, showAnswer, currentFood }: GameMapProps) {
+  
+  const targetLocation = { 
+    latitude: currentFood.coordinates[1], 
+    longitude: currentFood.coordinates[0] 
+  };
+
   return (
     <MapView
       style={styles.map}
       onPress={onMapPress}
+      onPoiClick={onMapPress} 
       initialRegion={{
         latitude: gameMode === 'europe' ? 52 : 20,
         longitude: gameMode === 'europe' ? 19 : 0,
@@ -23,22 +30,21 @@ export default function GameMap({ gameMode, onMapPress, selectedLocation, showAn
         longitudeDelta: gameMode === 'europe' ? 40 : 100,
       }}
     >
-      {selectedLocation && <Marker coordinate={selectedLocation} pinColor="orange" />}
+      {selectedLocation && (
+        <Marker coordinate={selectedLocation} pinColor="orange" />
+      )}
       {showAnswer && (
-        <>
-          <Marker 
-            coordinate={{ latitude: currentFood.coordinates[1], longitude: currentFood.coordinates[0] }} 
-            pinColor="green" 
-          />
-          <Polyline 
-            coordinates={[
-              selectedLocation,
-              { latitude: currentFood.coordinates[1], longitude: currentFood.coordinates[0] }
-            ]}
-            strokeWidth={3}
-            strokeColor="black"
-          />
-        </>
+        <Marker 
+          coordinate={targetLocation} 
+          pinColor="green" 
+        />
+      )}
+      {showAnswer && selectedLocation && (
+        <Polyline 
+          coordinates={[selectedLocation, targetLocation]}
+          strokeWidth={3}
+          strokeColor="black"
+        />
       )}
     </MapView>
   );
