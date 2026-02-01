@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Timer } from 'lucide-react-native'; 
 
@@ -10,21 +10,26 @@ interface TimerProps {
 
 export default function GameTimer({ duration, onTimeUp, isActive }: TimerProps) {
     const [timeLeft, setTimeLeft] = useState(duration);
+    
+    const onTimeUpRef = useRef(onTimeUp);
 
-   
+    useEffect(() => {
+        onTimeUpRef.current = onTimeUp;
+    }, [onTimeUp]);
+
     useEffect(() => {
         setTimeLeft(duration);
     }, [duration]);
 
     useEffect(() => {
         if (!isActive) return;
+        
         if (timeLeft === 0) return;
 
         const intervalId = setInterval(() => {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
                     clearInterval(intervalId);
-                    onTimeUp(); 
                     return 0;
                 }
                 return prevTime - 1;
@@ -32,7 +37,13 @@ export default function GameTimer({ duration, onTimeUp, isActive }: TimerProps) 
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [isActive, onTimeUp]); 
+    }, [isActive]); 
+
+    useEffect(() => {
+        if (timeLeft === 0 && isActive) {
+            onTimeUpRef.current();
+        }
+    }, [timeLeft, isActive]);
 
     const percentage = (timeLeft / duration) * 100;
     

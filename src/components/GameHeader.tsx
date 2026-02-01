@@ -38,7 +38,7 @@ export default function GameHeader({ currentFood, showHint, showAnswer, round, s
 const styles = StyleSheet.create({
   questionText: { fontSize: 20, fontWeight: 'bold', color: '#4A5284', textAlign: 'center', marginVertical: 8 },
   header: { height: '48%', backgroundColor: '#E8E4BC', zIndex: 1, padding: 10 }, 
-  foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd' }, 
+  foodImage: { width: '100%', height: '70%', backgroundColor: '#ffffff' }, 
   infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
   textRow: { alignItems: 'center', marginBottom: 5 },
   foodText: { fontSize: 22, fontWeight: 'bold', color: '#4A5284' },

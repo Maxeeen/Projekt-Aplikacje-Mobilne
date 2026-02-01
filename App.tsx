@@ -60,11 +60,22 @@ export default function App() {
   };
 
  
-  const handleTimeOut = () => {
+const handleTimeOut = () => {
+    let points = 0;
+    
+    if (selectedLocation) {
+        const dist = calculateDistance(
+            [selectedLocation.longitude, selectedLocation.latitude],
+            currentFood.coordinates
+        );
+        points = calculatePoints(dist, false); 
+    }
+
+    setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
     setTimeout(() => {
-        nextRound(0);
+        nextRound(points);
     }, 2500);
   };
 
