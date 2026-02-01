@@ -20,6 +20,7 @@ export default function App() {
   const [foods, setFoods] = useState(() => getRandomFoods('world', 5));
   const [round, setRound] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   
@@ -77,8 +78,9 @@ export default function App() {
     const points = calculatePoints(dist, false);
     
     setScore(prev => prev + points);
+    setShowHint(true);
     setShowAnswer(true);
-    await playSound();
+    //await playSound();
 
     setTimeout(() => {
         nextRound(points);
@@ -89,6 +91,7 @@ export default function App() {
     if (round < 4) {
       setRound(r => r + 1);
       setSelectedLocation(null);
+      setShowHint(false);
       setShowAnswer(false);
     } else {
       Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
@@ -101,6 +104,7 @@ export default function App() {
     setRound(0);
     setScore(0);
     setGameStarted(false);
+    setShowHint(false);
     setShowAnswer(false);
     setSelectedLocation(null);
     setFoods(getRandomFoods(gameMode, 5));
@@ -122,7 +126,8 @@ export default function App() {
   };
   const handleHintPress = () => {
     // jakoś rozdzielić ShowAnswer żeby pokazywał tylko nazwę potrawy, albo dodać nową funkcję?
-    Alert.alert("Podpowiedź", `Ta potrawa nazwya się: ${currentFood.name}`);
+   //Alert.alert("Podpowiedź", `Ta potrawa nazwya się: ${currentFood.name}`);
+    setShowHint(true);
   }
 
   if (!gameStarted) {
@@ -157,6 +162,7 @@ export default function App() {
 
         <GameHeader 
           currentFood={currentFood}
+          showHint={showHint}
           showAnswer={showAnswer}
           round={round}
           score={score}

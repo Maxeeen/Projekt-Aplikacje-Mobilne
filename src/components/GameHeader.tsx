@@ -3,14 +3,16 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 
 interface GameHeaderProps {
   currentFood: any;
+  showHint: boolean;
   showAnswer: boolean;
   round: number;
   score: number;
 }
 
-export default function GameHeader({ currentFood, showAnswer, round, score }: GameHeaderProps) {
+export default function GameHeader({ currentFood, showHint, showAnswer, round, score }: GameHeaderProps) {
   return (
     <View style={styles.header}>
+      <Text style={styles.questionText} >Skąd pochodzi ta potrawa?</Text>
       <Image 
         source={{ uri: `https://tse2.mm.bing.net/th?q=${encodeURIComponent(currentFood.imageQuery)}&w=800&h=600` }} 
         style={styles.foodImage}
@@ -20,7 +22,8 @@ export default function GameHeader({ currentFood, showAnswer, round, score }: Ga
       <View style={styles.infoBox}>
         <View style={styles.textRow}>
            <Text style={styles.foodText}>
-             {showAnswer ? `${currentFood.name} (${currentFood.country})` : "Co to za potrawa?"}
+             {showHint ? `${currentFood.name}`: "" }
+             {showAnswer ? ` (${currentFood.country})` : ""}
            </Text>
         </View>
         <View style={styles.statsRow}>
@@ -33,7 +36,8 @@ export default function GameHeader({ currentFood, showAnswer, round, score }: Ga
 }
 
 const styles = StyleSheet.create({
-  header: { height: '38%', backgroundColor: '#E8E4BC', zIndex: 1, }, 
+  questionText: { fontSize: 20, fontWeight: 'bold', color: '#4A5284', textAlign: 'center', marginVertical: 8 },
+  header: { height: '48%', backgroundColor: '#E8E4BC', zIndex: 1, padding: 10 }, 
   foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd' }, 
   infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
   textRow: { alignItems: 'center', marginBottom: 5 },
