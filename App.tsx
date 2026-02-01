@@ -61,6 +61,7 @@ export default function App() {
 
  
   const handleTimeOut = () => {
+    setShowHint(true);
     setShowAnswer(true);
     setTimeout(() => {
         nextRound(0);

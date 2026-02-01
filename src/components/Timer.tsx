@@ -37,13 +37,13 @@ export default function GameTimer({ duration, onTimeUp, isActive }: TimerProps) 
     const percentage = (timeLeft / duration) * 100;
     
     const isLow = timeLeft <= 10;
-    const barColor = isLow ? '#ef4444' : '#10b981'; 
+    const barColor = isLow ? '#F09797' : '#74C288'; 
 
     return (
         <View style={styles.container}>
             <View style={styles.textRow}>
-                <Timer size={20} color="#4b5563" />
-                <Text style={[styles.timeText, isLow && { color: '#ef4444' }]}>
+                <Timer size={20} color={isLow ? '#F09797' : '#77718C'} />
+                <Text style={[styles.timeText, isLow && { color: '#F09797' }]}>
                     {timeLeft}s
                 </Text>
             </View>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         fontSize: 18, 
         fontWeight: 'bold', 
         fontVariant: ['tabular-nums'],
-        color: '#4b5563',
+        color: '#77718C',
     },
     progressBarContainer: {
         height: 6,
