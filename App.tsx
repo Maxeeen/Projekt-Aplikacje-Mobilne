@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ChevronLeft, Lightbulb } from 'lucide-react-native';
-
+import * as Haptics from 'expo-haptics';
 import { getRandomFoods, GameMode } from './src/data/foods';
 import { calculateDistance, calculatePoints } from './src/utils/scoring';
 
@@ -60,7 +60,7 @@ export default function App() {
   };
 
  
-const handleTimeOut = () => {
+const handleTimeOut = async () => {
     let points = 0;
     
     if (selectedLocation) {
@@ -69,11 +69,17 @@ const handleTimeOut = () => {
             currentFood.coordinates
         );
         points = calculatePoints(dist, false); 
+        if (points === 5000) {
+           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+    } else {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
 
     setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
+
     setTimeout(() => {
         nextRound(points);
     }, 2500);
@@ -87,12 +93,15 @@ const handleTimeOut = () => {
       [selectedLocation.longitude, selectedLocation.latitude],
       currentFood.coordinates
     );
-    const points = calculatePoints(dist, false);
-    
+    const points = calculatePoints(dist, false); 
+
+    if (points === 5000) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
     setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
-    //await playSound();
+    // await playSound(); 
 
     setTimeout(() => {
         nextRound(points);
