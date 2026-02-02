@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 
 interface GameHeaderProps {
@@ -42,9 +42,10 @@ export default function GameHeader({ currentFood, showHint, showAnswer, round, s
 
   return (
     <View style={styles.header}>
-      <Text style={styles.questionText} >Skąd pochodzi ta potrawa?</Text>
+      <Text style={styles.questionText}>Skąd pochodzi ta potrawa?</Text>
+      
       <Image 
-        source={{ uri: `https://tse2.mm.bing.net/th?q=${encodeURIComponent(currentFood.imageQuery)}&w=800&h=600` }} 
+        source={{ uri: `https://tse2.mm.bing.net/th?q=${encodeURIComponent(currentFood.imageQuery)}&w=800&h=600&c=7&rs=1` }} 
         style={styles.foodImage}
         resizeMode="cover"
       />
@@ -66,10 +67,28 @@ export default function GameHeader({ currentFood, showHint, showAnswer, round, s
 }
 
 const styles = StyleSheet.create({
-  questionText: { fontSize: 20, fontWeight: 'bold', color: '#4A5284', textAlign: 'center', marginVertical: 8 },
-  header: { height: '48%', backgroundColor: '#E8E4BC', zIndex: 1, padding: 10 }, 
-  foodImage: { width: '100%', height: '70%', backgroundColor: '#ddd', borderRadius: 12 }, 
-  infoBox: { padding: 10, flex: 1, justifyContent: 'space-between' },
+  questionText: { 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    color: '#4A5284', 
+    textAlign: 'center', 
+    marginVertical: 8 
+  },
+  header: { 
+    height: '48%', 
+    backgroundColor: '#E8E4BC', 
+    zIndex: 1, 
+    padding: 4 
+  }, 
+  foodImage: { 
+    width: '100%', 
+    height: '65%', 
+  }, 
+  infoBox: { 
+    padding: 10, 
+    flex: 1, 
+    justifyContent: 'space-between' 
+  },
   textRow: { alignItems: 'center', marginBottom: 5 },
   foodText: { fontSize: 22, fontWeight: 'bold', color: '#4A5284' },
   statsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },

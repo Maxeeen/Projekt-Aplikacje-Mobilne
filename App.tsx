@@ -146,8 +146,6 @@ const handleTimeOut = async () => {
     );
   };
   const handleHintPress = () => {
-    // jakoś rozdzielić ShowAnswer żeby pokazywał tylko nazwę potrawy, albo dodać nową funkcję?
-   //Alert.alert("Podpowiedź", `Ta potrawa nazwya się: ${currentFood.name}`);
     setShowHint(true);
   }
 
@@ -165,11 +163,11 @@ const handleTimeOut = async () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
         
-        <TouchableOpacity style={styles.exitButton} onPress={handleExitGame}>
+        <TouchableOpacity style={[styles.roundButton, styles.exitButton]} onPress={handleExitGame}>
           <ChevronLeft size={24} color="#4A5284" />
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.hintButton} onPress={handleHintPress}>
+        <TouchableOpacity style={[styles.roundButton, styles.hintButton]} onPress={handleHintPress}>
           <Lightbulb size={24} color="#4A5284" />
         </TouchableOpacity>
 
@@ -209,16 +207,14 @@ const handleTimeOut = async () => {
   );
 }
 
-// Jak zmienić kolor tła obrazkaヾ(•ω•`)o?
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#E8E4BC', paddingTop: Platform.OS === 'android' ? 30 : 0  },
   overlay: { position: 'absolute', bottom: 40, alignSelf: 'center' },
   confirmButton: { backgroundColor: '#77718C', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, elevation: 5 },
   buttonText: { color: '#F1DCC3', fontSize: 18, fontWeight: 'bold' },
-  exitButton: {
+  roundButton: {
     position: 'absolute',
     top: 60,
-    left: 15,
     zIndex: 100, 
     backgroundColor: '#CFA282', 
     padding: 10,
@@ -229,19 +225,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  // czy dałoby się zamiast duplikować i zmieniać tylko left na right to jakoś uprościć?
+  exitButton: {
+    left: 15,
+  },
   hintButton: {
-    position: 'absolute',
-    top: 60,
     right: 15,
-    zIndex: 100, 
-    backgroundColor: '#CFA282',
-    padding: 10,
-    borderRadius: 30,
-    elevation: 5, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   }
 });
