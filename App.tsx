@@ -12,7 +12,7 @@ import GameHeader from './src/components/GameHeader';
 import GameMap from './src/components/GameMap';
 import GameTimer from './src/components/Timer';
 
-const ROUND_DURATION = 15;
+const ROUND_DURATION = 30;
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);

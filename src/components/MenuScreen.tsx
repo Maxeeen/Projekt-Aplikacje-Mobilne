@@ -97,10 +97,10 @@ export default function MenuScreen({ gameMode, setGameMode, onStartGame }: MenuS
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Jak grać?</Text>
             <View>
-              <Text style={styles.modalText}>Po rozpocząciu gry będziesz miał 15 sekund aby zaznaczyć na mapie miejsce pochodzenia potrawy</Text>
-              <Text style={styles.modalText}>Pamiętaj że możesz użyć podpowiedzi aby wyświetlić nazwę potrawy</Text>
+              <Text style={styles.modalText}>Po rozpocząciu gry będziesz miał 30 sekund aby zaznaczyć na mapie miejsce pochodzenia potrawy</Text>
+              <Text style={styles.modalText2}>Pamiętaj że możesz użyć podpowiedzi aby wyświetlić nazwę potrawy</Text>
               <Text style={styles.modalText}>Korzystając z podpowiedzi zdobędziesz 30% mniej punktów</Text>
-              <Text style={styles.modalText}>Powodzenia</Text>
+              <Text style={styles.modalText2}>Powodzenia</Text>
             </View>
             <TouchableOpacity
               style={styles.closeButton}
@@ -132,9 +132,10 @@ const styles = StyleSheet.create({
   footerText: { color: '#4A5284', fontSize: 16, fontWeight: 'bold' },
   infoButton: { backgroundColor: '#E8E4BC', paddingVertical: 15, paddingHorizontal: 50, borderRadius: 30, elevation: 5 },
   modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center'},
-  modalContent: { width: '85%', backgroundColor: '#fff', borderRadius: 20, padding: 25, alignItems: 'center', elevation: 10, shadowColor: '#4A5284' },
+  modalContent: { width: '85%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 25, alignItems: 'center', elevation: 10, shadowColor: '#4A5284' },
   modalTitle: { fontSize: 24, fontWeight: 'bold', color: '#4A5284', marginBottom: 15 },
-  modalText: { fontSize: 16, color: '#555', marginBottom: 10, textAlign: 'center', lineHeight: 24},
+  modalText: { fontSize: 16, color: '#4A5284', marginBottom: 10, textAlign: 'center', lineHeight: 24},
+  modalText2: { fontSize: 16, color: '#679CA6', marginBottom: 10, textAlign: 'center', lineHeight: 24, fontWeight: 'bold' },
   closeButton: { backgroundColor: '#4A5284', paddingVertical: 12, paddingHorizontal: 30, borderRadius: 25, marginTop: 20 },
   closeButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' }
 });
