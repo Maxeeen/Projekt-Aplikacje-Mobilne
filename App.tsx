@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform, Modal } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ChevronLeft, Lightbulb } from 'lucide-react-native';
@@ -26,6 +26,8 @@ export default function App() {
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
   const currentFood = foods[round];
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (!showAnswer && selectedLocation) {
@@ -132,18 +134,7 @@ const handleTimeOut = async () => {
   };
 
   const handleExitGame = () => {
-    Alert.alert(
-      "Wyjście z gry",
-      "Czy na pewno chcesz wrócić do menu? Stracisz obecny wynik.",
-      [
-        { text: "Anuluj", style: "cancel" },
-        { 
-          text: "Wychodzę", 
-          style: "destructive", 
-          onPress: resetGame 
-        }
-      ]
-    );
+    setModalVisible(true);
   };
   const handleHintPress = () => {
     setShowHint(true);
@@ -178,6 +169,28 @@ const handleTimeOut = async () => {
           isActive={!showAnswer} 
           onTimeUp={handleTimeOut} 
         />
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalQuestion}>Czy na pewno chcesz zakończyć grę?</Text>
+              <Text style={styles.modalText}>Wszystkie postępy zostaną utracone</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={() => { setModalVisible(false); resetGame(); }}>
+                <Text style={styles.modalButtonText}>Tak, zakończ grę</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalButton, styles.modalCancelButton]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Anuluj</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+
+        </Modal>
 
         <GameHeader 
           currentFood={currentFood}
@@ -230,5 +243,12 @@ const styles = StyleSheet.create({
   },
   hintButton: {
     right: 15,
-  }
+  },
+  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center'},
+  modalContent: { width: '80%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 20, alignItems: 'center', elevation: 10, shadowColor: '#4A5284', paddingHorizontal: 10 },
+  modalQuestion: { fontSize: 26, color: '#4A5284', marginBottom: 10, textAlign: 'center', fontWeight: 'bold' },
+  modalText: { fontSize: 14, color: '#77718C', marginBottom: 10, textAlign: 'center' },
+  modalButton: { backgroundColor: '#f55151', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 25, marginTop: 10 },
+  modalCancelButton: { backgroundColor: '#4A5284', marginTop: 10 },
+  modalButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' }
 });

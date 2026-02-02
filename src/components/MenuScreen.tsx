@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Modal, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, Modal, } from 'react-native';
 import { GameMode } from '../data/foods';
 
 interface MenuScreenProps {
