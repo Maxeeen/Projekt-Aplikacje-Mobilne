@@ -14,6 +14,12 @@ import GameTimer from './src/components/Timer';
 
 const ROUND_DURATION = 30;
 
+const SOUND_FILES = {
+  hint: require('./assets/pop-hint.mp3'),
+  correct: require('./assets/fabulous_answer.mp3'),
+  finish: require('./assets/Finish.mp3'),
+};
+
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameMode, setGameMode] = useState<GameMode>('world'); 
@@ -44,13 +50,19 @@ export default function App() {
     }
   }, [selectedLocation, showAnswer]);
 
-  async function playSound() {
+  async function playSound(soundName) {
     try {
-      const { sound } = await Audio.Sound.createAsync(
-        require('./assets/pop-hint.mp3')
-      );
+      const source = SOUND_FILES[soundName];
+
+      if (!source) {
+        console.warn(`Sound ${soundName} not found`);
+        return;
+      }
+
+      const { sound } = await Audio.Sound.createAsync(source);
       await sound.playAsync();
-    } catch (e) {
+    } catch (error) {
+      console.error('Error playing sound:', error);
     }
   }
 
@@ -103,11 +115,11 @@ export default function App() {
 
     if (points === 5000) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await playSound('correct');
     }
     setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
-    // await playSound(); 
 
     setTimeout(() => {
         nextRound(points);
@@ -122,6 +134,7 @@ export default function App() {
       setShowAnswer(false);
     } else {
       setScoreModalVisible(true);
+      playSound('finish');
     }
   };
 
@@ -155,8 +168,9 @@ export default function App() {
   };
   
   const handleHintPress = async () => {
-    setShowHint(true);
+    await playSound('hint');
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setShowHint(true);
   }
 
   if (!gameStarted) {
