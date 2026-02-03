@@ -81,7 +81,7 @@ const europeanFoods: FoodItem[] = [
 
   // Ireland
   { name: 'Irish Stew', country: 'Irlandia', coordinates: [-6.2603, 53.3498], imageQuery: 'irish stew' },
-  
+
   // Denmark
   { name: 'Smørrebrød', country: 'Dania', coordinates: [12.5683, 55.6761], imageQuery: 'smorrebrod danish sandwich' },
   { name: 'Frikadeller', country: 'Dania', coordinates: [12.5683, 55.6761], imageQuery: 'frikadeller danish meatballs' },
@@ -191,6 +191,33 @@ const worldFoods: FoodItem[] = [
 
   // Iran
   { name: 'Kebab Koobideh', country: 'Iran', coordinates: [51.3890, 35.6892], imageQuery: 'kebab koobideh' },
+  
+  // Cuba
+  { name: 'Ropa Vieja', country: 'Kuba', coordinates: [-82.3666, 23.1136], imageQuery: 'ropa vieja cuban food' },
+  { name: 'Cubano Sandwich', country: 'Kuba', coordinates: [-82.3666, 23.1136], imageQuery: 'cuban sandwich' },
+
+  // Jamaica
+  { name: 'Jerk Chicken', country: 'Jamajka', coordinates: [-76.7920, 17.9712], imageQuery: 'jerk chicken jamaican' },
+  { name: 'Ackee & Saltfish', country: 'Jamajka', coordinates: [-76.7920, 17.9712], imageQuery: 'ackee and saltfish' },
+
+  // Malaysia
+  { name: 'Nasi Lemak', country: 'Malezja', coordinates: [101.6869, 3.1390], imageQuery: 'nasi lemak malaysia' },
+  { name: 'Laksa', country: 'Malezja', coordinates: [100.3178, 5.4141], imageQuery: 'laksa soup' },
+
+  // Taiwan
+  { name: 'Bubble Tea', country: 'Tajwan', coordinates: [121.5654, 25.0330], imageQuery: 'bubble tea taiwan' },
+  { name: 'Beef Noodle Soup', country: 'Tajwan', coordinates: [121.5654, 25.0330], imageQuery: 'taiwanese beef noodle soup' },
+
+  // Chile
+  { name: 'Pastel de Choclo', country: 'Chile', coordinates: [-70.6693, -33.4489], imageQuery: 'pastel de choclo chile' },
+  { name: 'Completo', country: 'Chile', coordinates: [-71.6127, -33.0472], imageQuery: 'completo italiano hot dog' },
+
+  // Nigeria
+  { name: 'Jollof Rice', country: 'Nigeria', coordinates: [3.3792, 6.5244], imageQuery: 'jollof rice nigerian' },
+  { name: 'Egusi Soup', country: 'Nigeria', coordinates: [7.4951, 9.0579], imageQuery: 'egusi soup' },
+
+  // Saudi Arabia
+  { name: 'Kabsa', country: 'Arabia Saudyjska', coordinates: [46.6753, 24.7136], imageQuery: 'kabsa saudi arabia' },
 ];
 
 export function getRandomFoods(mode: GameMode, count: number): FoodItem[] {

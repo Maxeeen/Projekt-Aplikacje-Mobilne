@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GameMode } from '../data/foods';
 
 interface GameMapProps {
@@ -10,6 +10,27 @@ interface GameMapProps {
   showAnswer: boolean;
   currentFood: any;
 }
+const mapStyle = [
+  {
+    "featureType": "poi", 
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "water", 
+    "elementType": "geometry",
+    "stylers": [
+      { "color": "#8ef5e9" }
+    ]
+  },
+];
 
 export default function GameMap({ gameMode, onMapPress, selectedLocation, showAnswer, currentFood }: GameMapProps) {
   
@@ -20,6 +41,8 @@ export default function GameMap({ gameMode, onMapPress, selectedLocation, showAn
 
   return (
     <MapView
+      provider={PROVIDER_GOOGLE}
+      customMapStyle={mapStyle} 
       style={styles.map}
       onPress={onMapPress}
       onPoiClick={onMapPress} 
@@ -29,6 +52,12 @@ export default function GameMap({ gameMode, onMapPress, selectedLocation, showAn
         latitudeDelta: gameMode === 'europe' ? 40 : 100,
         longitudeDelta: gameMode === 'europe' ? 40 : 100,
       }}
+      toolbarEnabled={false} 
+      showsPointsOfInterest={false}
+      showsCompass={false}
+      showsScale={false}
+      showsBuildings={false}
+      showsIndoors={false}
     >
       {selectedLocation && (
         <Marker coordinate={selectedLocation} pinColor="orange" />
@@ -43,7 +72,8 @@ export default function GameMap({ gameMode, onMapPress, selectedLocation, showAn
         <Polyline 
           coordinates={[selectedLocation, targetLocation]}
           strokeWidth={3}
-          strokeColor="black"
+          strokeColor="black" 
+          lineDashPattern={[5, 5]}
         />
       )}
     </MapView>
