@@ -26,6 +26,8 @@ export default function App() {
   
   // Stan dla Modala wyjścia
   const [modalVisible, setModalVisible] = useState(false);
+  // Stan dla Modala wyniku
+  const [ScoreModalVisible, setScoreModalVisible] = useState(false);
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
   const currentFood = foods[round];
@@ -45,7 +47,7 @@ export default function App() {
   async function playSound() {
     try {
       const { sound } = await Audio.Sound.createAsync(
-        require('./assets/success.mp3')
+        require('./assets/pop-hint.mp3')
       );
       await sound.playAsync();
     } catch (e) {
@@ -119,23 +121,13 @@ export default function App() {
       setShowHint(false);
       setShowAnswer(false);
     } else {
-    
-      Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
-        { 
-            text: "Menu", 
-            style: "cancel", 
-            onPress: goToMenu 
-        },
-        { 
-            text: "Zagraj ponownie", 
-            onPress: restartGame 
-        }
-      ]);
+      setScoreModalVisible(true);
     }
   };
 
 
   const restartGame = () => {
+    setScoreModalVisible(false);
     setRound(0);
     setScore(0);
     setShowHint(false);
@@ -146,6 +138,7 @@ export default function App() {
 
 
   const goToMenu = () => {
+    setScoreModalVisible(false);
     setRound(0);
     setScore(0);
     setGameStarted(false);
@@ -156,12 +149,14 @@ export default function App() {
   };
 
 
-  const handleExitGame = () => {
+  const handleExitGame = async () => {
     setModalVisible(true);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
   
-  const handleHintPress = () => {
+  const handleHintPress = async () => {
     setShowHint(true);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }
 
   if (!gameStarted) {
@@ -206,9 +201,10 @@ export default function App() {
               
               <TouchableOpacity 
                 style={styles.modalButton} 
-                onPress={() => { 
+                onPress={async () => { 
                     setModalVisible(false); 
                     goToMenu(); 
+                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 }}
               >
                 <Text style={styles.modalButtonText}>Tak, zakończ grę</Text>
@@ -219,6 +215,26 @@ export default function App() {
                 onPress={() => setModalVisible(false)}
               >
                 <Text style={styles.modalButtonText}>Anuluj</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={ScoreModalVisible}
+          onRequestClose={() => setScoreModalVisible(false)}
+        >
+          <View style={styles.ScoreModalOverlay}>
+            <View style={styles.ScoreModalContent}>
+              <Text style={styles.modalQuestion}>Koniec Gry!</Text>
+              <Text style={styles.modalText}>Twój końcowy wynik: {score} pkt</Text>
+              <TouchableOpacity style={styles.ScoremodalButton} onPress={restartGame}>
+                <Text style={styles.modalButtonText}>Zagraj ponownie</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.ScoremodalButtonExit} onPress={async () => { goToMenu(); await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); }}>
+                <Text style={styles.modalButtonText}>Wyjdź do menu głównego</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -281,5 +297,10 @@ const styles = StyleSheet.create({
   modalText: { fontSize: 14, color: '#77718C', marginBottom: 20, textAlign: 'center' },
   modalButton: { backgroundColor: '#f55151', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 25, marginTop: 5, width: '100%', alignItems: 'center' },
   modalCancelButton: { backgroundColor: '#4A5284', marginTop: 10 },
-  modalButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' }
+  modalButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+
+  ScoreModalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+  ScoreModalContent: { width: '85%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 25, alignItems: 'center', elevation: 10, shadowColor: '#4A5284' },
+  ScoremodalButton: { backgroundColor: '#4A5284', paddingVertical: 12, paddingHorizontal: 30, borderRadius: 25, marginTop: 20 },
+  ScoremodalButtonExit: { backgroundColor: '#f55151', paddingVertical: 12, paddingHorizontal: 30, borderRadius: 25, marginTop: 10 },
 });
