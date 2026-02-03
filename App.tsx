@@ -24,6 +24,7 @@ export default function App() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   
+  // Stan dla Modala wyjścia
   const [modalVisible, setModalVisible] = useState(false);
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
@@ -69,6 +70,7 @@ export default function App() {
             [selectedLocation.longitude, selectedLocation.latitude],
             currentFood.coordinates
         );
+        // Ważne: Przekazujemy showHint, żeby naliczyło karę
         points = calculatePoints(dist, showHint); 
         
         if (points === 5000) {
@@ -94,6 +96,7 @@ export default function App() {
       [selectedLocation.longitude, selectedLocation.latitude],
       currentFood.coordinates
     );
+    // Ważne: Przekazujemy showHint, żeby naliczyło karę
     const points = calculatePoints(dist, showHint); 
 
     if (points === 5000) {
@@ -102,6 +105,7 @@ export default function App() {
     setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
+    // await playSound(); 
 
     setTimeout(() => {
         nextRound(points);
@@ -115,6 +119,7 @@ export default function App() {
       setShowHint(false);
       setShowAnswer(false);
     } else {
+    
       Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
         { 
             text: "Menu", 
@@ -129,6 +134,7 @@ export default function App() {
     }
   };
 
+
   const restartGame = () => {
     setRound(0);
     setScore(0);
@@ -137,6 +143,7 @@ export default function App() {
     setSelectedLocation(null);
     setFoods(getRandomFoods(gameMode, 5));
   };
+
 
   const goToMenu = () => {
     setRound(0);
@@ -147,6 +154,7 @@ export default function App() {
     setSelectedLocation(null);
     setFoods(getRandomFoods(gameMode, 5));
   };
+
 
   const handleExitGame = () => {
     setModalVisible(true);
@@ -185,37 +193,10 @@ export default function App() {
           onTimeUp={handleTimeOut} 
         />
 
-        <GameHeader 
-          currentFood={currentFood}
-          showHint={showHint}
-          showAnswer={showAnswer}
-          round={round}
-          score={score}
-        />
-
-        <GameMap 
-          gameMode={gameMode}
-          onMapPress={handleMapPress}
-          selectedLocation={selectedLocation}
-          showAnswer={showAnswer}
-          currentFood={currentFood}
-        />
-
-        {!showAnswer && selectedLocation && (
-          <Animated.View style={[styles.overlay, { opacity: buttonOpacity }]}>
-            <TouchableOpacity style={styles.confirmButton} onPress={submitAnswer}>
-              <Text style={styles.buttonText}>POTWIERDŹ</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        )}
-      </SafeAreaView> 
-      
-
-      <Modal
+        <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
-          statusBarTranslucent={true}
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
@@ -243,6 +224,30 @@ export default function App() {
           </View>
         </Modal>
 
+        <GameHeader 
+          currentFood={currentFood}
+          showHint={showHint}
+          showAnswer={showAnswer}
+          round={round}
+          score={score}
+        />
+
+        <GameMap 
+          gameMode={gameMode}
+          onMapPress={handleMapPress}
+          selectedLocation={selectedLocation}
+          showAnswer={showAnswer}
+          currentFood={currentFood}
+        />
+
+        {!showAnswer && selectedLocation && (
+          <Animated.View style={[styles.overlay, { opacity: buttonOpacity }]}>
+            <TouchableOpacity style={styles.confirmButton} onPress={submitAnswer}>
+              <Text style={styles.buttonText}>POTWIERDŹ</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }
@@ -269,7 +274,8 @@ const styles = StyleSheet.create({
   exitButton: { left: 15 },
   hintButton: { right: 15 },
   
-  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' },
+  
+  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center'}, 
   modalContent: { width: '80%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 20, alignItems: 'center', elevation: 10, shadowColor: '#4A5284' },
   modalQuestion: { fontSize: 24, color: '#4A5284', marginBottom: 10, textAlign: 'center', fontWeight: 'bold' },
   modalText: { fontSize: 14, color: '#77718C', marginBottom: 20, textAlign: 'center' },
