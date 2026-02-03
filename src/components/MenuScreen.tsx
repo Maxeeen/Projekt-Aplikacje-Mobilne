@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Animated, Modal, } from 'react-native';
 import { GameMode } from '../data/foods';
+import * as Haptics from 'expo-haptics';
 
 interface MenuScreenProps {
   gameMode: GameMode;
@@ -76,7 +77,7 @@ export default function MenuScreen({ gameMode, setGameMode, onStartGame }: MenuS
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.mainButton} onPress={onStartGame}>
+      <TouchableOpacity style={styles.mainButton} onPress={async () => { await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onStartGame(); }}>
         <Text style={styles.buttonText}>ROZPOCZNIJ GRĘ</Text>
       </TouchableOpacity>
       <View style={styles.footer}>

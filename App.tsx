@@ -220,25 +220,6 @@ export default function App() {
           </View>
         </Modal>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={ScoreModalVisible}
-          onRequestClose={() => setScoreModalVisible(false)}
-        >
-          <View style={styles.ScoreModalOverlay}>
-            <View style={styles.ScoreModalContent}>
-              <Text style={styles.modalQuestion}>Koniec Gry!</Text>
-              <Text style={styles.modalText}>Twój końcowy wynik: {score} pkt</Text>
-              <TouchableOpacity style={styles.ScoremodalButton} onPress={restartGame}>
-                <Text style={styles.modalButtonText}>Zagraj ponownie</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.ScoremodalButtonExit} onPress={async () => { goToMenu(); await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); }}>
-                <Text style={styles.modalButtonText}>Wyjdź do menu głównego</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
 
         <GameHeader 
           currentFood={currentFood}
@@ -264,6 +245,26 @@ export default function App() {
           </Animated.View>
         )}
       </SafeAreaView>
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={ScoreModalVisible}
+          statusBarTranslucent={true}
+          onRequestClose={() => setScoreModalVisible(false)}
+        >
+          <View style={styles.ScoreModalOverlay}>
+            <View style={styles.ScoreModalContent}>
+              <Text style={styles.modalQuestion}>Koniec Gry!</Text>
+              <Text style={styles.modalText}>Twój końcowy wynik: {score} pkt</Text>
+              <TouchableOpacity style={styles.ScoremodalButton} onPress={restartGame}>
+                <Text style={styles.modalButtonText}>Zagraj ponownie</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.ScoremodalButtonExit} onPress={async () => { goToMenu(); await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); }}>
+                <Text style={styles.modalButtonText}>Wyjdź do menu głównego</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
     </GestureHandlerRootView>
   );
 }
