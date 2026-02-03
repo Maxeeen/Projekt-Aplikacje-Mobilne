@@ -30,9 +30,7 @@ export default function App() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   
-  // Stan dla Modala wyjścia
   const [modalVisible, setModalVisible] = useState(false);
-  // Stan dla Modala wyniku
   const [ScoreModalVisible, setScoreModalVisible] = useState(false);
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
@@ -84,7 +82,6 @@ export default function App() {
             [selectedLocation.longitude, selectedLocation.latitude],
             currentFood.coordinates
         );
-        // Ważne: Przekazujemy showHint, żeby naliczyło karę
         points = calculatePoints(dist, showHint); 
         
         if (points === 5000) {
@@ -110,7 +107,6 @@ export default function App() {
       [selectedLocation.longitude, selectedLocation.latitude],
       currentFood.coordinates
     );
-    // Ważne: Przekazujemy showHint, żeby naliczyło karę
     const points = calculatePoints(dist, showHint); 
 
     if (points === 5000) {
