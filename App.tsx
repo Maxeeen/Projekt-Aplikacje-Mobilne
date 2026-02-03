@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform, Modal } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ChevronLeft, Lightbulb } from 'lucide-react-native';
@@ -12,7 +12,7 @@ import GameHeader from './src/components/GameHeader';
 import GameMap from './src/components/GameMap';
 import GameTimer from './src/components/Timer';
 
-const ROUND_DURATION = 15;
+const ROUND_DURATION = 30;
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -23,6 +23,8 @@ export default function App() {
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
+  
+  const [modalVisible, setModalVisible] = useState(false);
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
   const currentFood = foods[round];
@@ -68,7 +70,7 @@ export default function App() {
             currentFood.coordinates
         );
         points = calculatePoints(dist, showHint); 
-
+        
         if (points === 5000) {
            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
@@ -100,7 +102,6 @@ export default function App() {
     setScore(prev => prev + points);
     setShowHint(true);
     setShowAnswer(true);
-    // await playSound(); 
 
     setTimeout(() => {
         nextRound(points);
@@ -114,21 +115,17 @@ export default function App() {
       setShowHint(false);
       setShowAnswer(false);
     } else {
-      Alert.alert(
-        "Koniec Gry!", 
-        `Twój końcowy wynik: ${score + pointsLastRound} pkt`, 
-        [
-          { 
+      Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
+        { 
             text: "Menu", 
             style: "cancel", 
             onPress: goToMenu 
-          },
-          { 
+        },
+        { 
             text: "Zagraj ponownie", 
             onPress: restartGame 
-          }
-        ]
-      );
+        }
+      ]);
     }
   };
 
@@ -139,7 +136,6 @@ export default function App() {
     setShowAnswer(false);
     setSelectedLocation(null);
     setFoods(getRandomFoods(gameMode, 5));
-  
   };
 
   const goToMenu = () => {
@@ -153,18 +149,7 @@ export default function App() {
   };
 
   const handleExitGame = () => {
-    Alert.alert(
-      "Wyjście z gry",
-      "Czy na pewno chcesz wrócić do menu? Stracisz obecny wynik.",
-      [
-        { text: "Anuluj", style: "cancel" },
-        { 
-          text: "Wychodzę", 
-          style: "destructive", 
-          onPress: goToMenu 
-        }
-      ]
-    );
+    setModalVisible(true);
   };
   
   const handleHintPress = () => {
@@ -223,7 +208,41 @@ export default function App() {
             </TouchableOpacity>
           </Animated.View>
         )}
-      </SafeAreaView>
+      </SafeAreaView> 
+      
+
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          statusBarTranslucent={true}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalQuestion}>Czy na pewno chcesz zakończyć grę?</Text>
+              <Text style={styles.modalText}>Wszystkie postępy zostaną utracone</Text>
+              
+              <TouchableOpacity 
+                style={styles.modalButton} 
+                onPress={() => { 
+                    setModalVisible(false); 
+                    goToMenu(); 
+                }}
+              >
+                <Text style={styles.modalButtonText}>Tak, zakończ grę</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.modalCancelButton]} 
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Anuluj</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
     </GestureHandlerRootView>
   );
 }
@@ -233,6 +252,7 @@ const styles = StyleSheet.create({
   overlay: { position: 'absolute', bottom: 40, alignSelf: 'center' },
   confirmButton: { backgroundColor: '#77718C', paddingVertical: 15, paddingHorizontal: 40, borderRadius: 30, elevation: 5 },
   buttonText: { color: '#F1DCC3', fontSize: 18, fontWeight: 'bold' },
+  
   roundButton: {
     position: 'absolute',
     top: 60,
@@ -247,5 +267,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   exitButton: { left: 15 },
-  hintButton: { right: 15 }
+  hintButton: { right: 15 },
+  
+  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' },
+  modalContent: { width: '80%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 20, alignItems: 'center', elevation: 10, shadowColor: '#4A5284' },
+  modalQuestion: { fontSize: 24, color: '#4A5284', marginBottom: 10, textAlign: 'center', fontWeight: 'bold' },
+  modalText: { fontSize: 14, color: '#77718C', marginBottom: 20, textAlign: 'center' },
+  modalButton: { backgroundColor: '#f55151', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 25, marginTop: 5, width: '100%', alignItems: 'center' },
+  modalCancelButton: { backgroundColor: '#4A5284', marginTop: 10 },
+  modalButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' }
 });
