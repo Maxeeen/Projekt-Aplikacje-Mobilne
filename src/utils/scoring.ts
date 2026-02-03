@@ -43,7 +43,7 @@ export function calculatePoints(distance: number, usedHint: boolean): number {
   if (points < 0) points = 0;
 
   if (usedHint) {
-    points = Math.floor(points * 0.3);
+    points = Math.floor(points * 0.7);
   }
 
   return points;

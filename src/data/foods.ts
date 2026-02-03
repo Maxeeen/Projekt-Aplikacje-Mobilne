@@ -58,6 +58,49 @@ const europeanFoods: FoodItem[] = [
   // Turkey
   { name: 'Kebab', country: 'Turcja', coordinates: [28.9784, 41.0082], imageQuery: 'turkish kebab' },
   { name: 'Baklava', country: 'Turcja', coordinates: [28.9784, 41.0082], imageQuery: 'baklava turkish' },
+
+  // Czech Republic
+  { name: 'Svíčková', country: 'Czechy', coordinates: [14.4378, 50.0755], imageQuery: 'svickova czech' },
+  { name: 'Trdelník', country: 'Czechy', coordinates: [14.4378, 50.0755], imageQuery: 'trdelnik' },
+
+  // Ukraine
+  { name: 'Barszcz Ukraiński', country: 'Ukraina', coordinates: [30.5234, 50.4501], imageQuery: 'ukrainian borscht' },
+  { name: 'Warenyky', country: 'Ukraina', coordinates: [30.5234, 50.4501], imageQuery: 'varenyky dumplings' },
+
+  // Switzerland
+  { name: 'Fondue', country: 'Szwajcaria', coordinates: [8.5417, 47.3769], imageQuery: 'cheese fondue swiss' },
+  { name: 'Raclette', country: 'Szwajcaria', coordinates: [7.4474, 46.9480], imageQuery: 'raclette cheese' },
+
+  // Netherlands
+  { name: 'Stroopwafel', country: 'Holandia', coordinates: [4.9041, 52.3676], imageQuery: 'stroopwafel' },
+  { name: 'Haring', country: 'Holandia', coordinates: [4.2986, 52.0705], imageQuery: 'dutch herring raw' },
+
+  // Georgia 
+  { name: 'Chaczapuri', country: 'Gruzja', coordinates: [44.8271, 41.7151], imageQuery: 'khachapuri adjaruli' },
+  { name: 'Chinkali', country: 'Gruzja', coordinates: [44.8271, 41.7151], imageQuery: 'khinkali dumplings' },
+
+  // Ireland
+  { name: 'Irish Stew', country: 'Irlandia', coordinates: [-6.2603, 53.3498], imageQuery: 'irish stew' },
+  
+  // Denmark
+  { name: 'Smørrebrød', country: 'Dania', coordinates: [12.5683, 55.6761], imageQuery: 'smorrebrod danish sandwich' },
+  { name: 'Frikadeller', country: 'Dania', coordinates: [12.5683, 55.6761], imageQuery: 'frikadeller danish meatballs' },
+
+  // Norway
+  { name: 'Gravlax', country: 'Norwegia', coordinates: [10.7522, 59.9139], imageQuery: 'gravlax salmon' },
+  { name: 'Fårikål', country: 'Norwegia', coordinates: [5.3221, 60.3913], imageQuery: 'farikal norwegian' },
+
+  // Romania
+  { name: 'Sarmale', country: 'Rumunia', coordinates: [26.1025, 44.4268], imageQuery: 'sarmale romanian cabbage rolls' },
+  { name: 'Mămăligă', country: 'Rumunia', coordinates: [23.5914, 46.7712], imageQuery: 'mamaliga polenta' },
+
+  // Croatia
+  { name: 'Crni Rižot', country: 'Chorwacja', coordinates: [18.0944, 42.6507], imageQuery: 'black risotto croatia' },
+  { name: 'Ćevapi', country: 'Chorwacja', coordinates: [15.9819, 45.8150], imageQuery: 'cevapi balkan' },
+
+  // Bulgaria
+  { name: 'Banitsa', country: 'Bułgaria', coordinates: [23.3219, 42.6977], imageQuery: 'banitsa bulgarian' },
+  { name: 'Szopska', country: 'Bułgaria', coordinates: [27.9105, 43.2141], imageQuery: 'shopska salad' },
 ];
 
 const worldFoods: FoodItem[] = [
@@ -120,6 +163,34 @@ const worldFoods: FoodItem[] = [
   
   // Ethiopia
   { name: 'Injera', country: 'Etiopia', coordinates: [38.7469, 9.0320], imageQuery: 'injera ethiopian' },
+
+  // Canada
+  { name: 'Poutine', country: 'Kanada', coordinates: [-73.5673, 45.5017], imageQuery: 'poutine' },
+  { name: 'Syrop Klonowy', country: 'Kanada', coordinates: [-71.2075, 46.8139], imageQuery: 'maple syrup bottle' },
+
+  // Australia
+  { name: 'Pavlova', country: 'Australia', coordinates: [151.2093, -33.8688], imageQuery: 'pavlova cake' },
+  { name: 'Meat Pie', country: 'Australia', coordinates: [144.9631, -37.8136], imageQuery: 'australian meat pie' },
+
+  // Indonesia
+  { name: 'Nasi Goreng', country: 'Indonezja', coordinates: [106.8456, -6.2088], imageQuery: 'nasi goreng' },
+  { name: 'Satay', country: 'Indonezja', coordinates: [115.1889, -8.4095], imageQuery: 'chicken satay skewers' },
+
+  // Philippines
+  { name: 'Adobo', country: 'Filipiny', coordinates: [120.9842, 14.5995], imageQuery: 'chicken adobo philippines' },
+
+  // Egypt
+  { name: 'Koshary', country: 'Egipt', coordinates: [31.2357, 30.0444], imageQuery: 'koshary egyptian food' },
+
+  // South Africa
+  { name: 'Bobotie', country: 'RPA', coordinates: [18.4241, -33.9249], imageQuery: 'bobotie south africa' },
+  { name: 'Bunny Chow', country: 'RPA', coordinates: [31.0218, -29.8587], imageQuery: 'bunny chow durban' },
+
+  // Colombia
+  { name: 'Arepas', country: 'Kolumbia', coordinates: [-74.0721, 4.7110], imageQuery: 'arepas colombian' },
+
+  // Iran
+  { name: 'Kebab Koobideh', country: 'Iran', coordinates: [51.3890, 35.6892], imageQuery: 'kebab koobideh' },
 ];
 
 export function getRandomFoods(mode: GameMode, count: number): FoodItem[] {

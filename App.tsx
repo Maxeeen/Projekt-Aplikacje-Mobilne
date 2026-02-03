@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform, Modal } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, Animated, Platform } from 'react-native';
 import { Audio } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ChevronLeft, Lightbulb } from 'lucide-react-native';
@@ -12,7 +12,7 @@ import GameHeader from './src/components/GameHeader';
 import GameMap from './src/components/GameMap';
 import GameTimer from './src/components/Timer';
 
-const ROUND_DURATION = 30;
+const ROUND_DURATION = 15;
 
 export default function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -26,8 +26,6 @@ export default function App() {
   
   const buttonOpacity = useRef(new Animated.Value(0)).current; 
   const currentFood = foods[round];
-
-  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (!showAnswer && selectedLocation) {
@@ -61,8 +59,7 @@ export default function App() {
     setSelectedLocation(e.nativeEvent.coordinate);
   };
 
- 
-const handleTimeOut = async () => {
+  const handleTimeOut = async () => {
     let points = 0;
     
     if (selectedLocation) {
@@ -70,7 +67,8 @@ const handleTimeOut = async () => {
             [selectedLocation.longitude, selectedLocation.latitude],
             currentFood.coordinates
         );
-        points = calculatePoints(dist, false); 
+        points = calculatePoints(dist, showHint); 
+
         if (points === 5000) {
            await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
@@ -87,7 +85,6 @@ const handleTimeOut = async () => {
     }, 2500);
   };
 
- 
   const submitAnswer = async () => {
     if (!selectedLocation) return;
 
@@ -95,7 +92,7 @@ const handleTimeOut = async () => {
       [selectedLocation.longitude, selectedLocation.latitude],
       currentFood.coordinates
     );
-    const points = calculatePoints(dist, false); 
+    const points = calculatePoints(dist, showHint); 
 
     if (points === 5000) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -117,13 +114,35 @@ const handleTimeOut = async () => {
       setShowHint(false);
       setShowAnswer(false);
     } else {
-      Alert.alert("Koniec Gry!", `Twój końcowy wynik: ${score + pointsLastRound} pkt`, [
-        { text: "Zagraj ponownie", onPress: resetGame }
-      ]);
+      Alert.alert(
+        "Koniec Gry!", 
+        `Twój końcowy wynik: ${score + pointsLastRound} pkt`, 
+        [
+          { 
+            text: "Menu", 
+            style: "cancel", 
+            onPress: goToMenu 
+          },
+          { 
+            text: "Zagraj ponownie", 
+            onPress: restartGame 
+          }
+        ]
+      );
     }
   };
 
-  const resetGame = () => {
+  const restartGame = () => {
+    setRound(0);
+    setScore(0);
+    setShowHint(false);
+    setShowAnswer(false);
+    setSelectedLocation(null);
+    setFoods(getRandomFoods(gameMode, 5));
+  
+  };
+
+  const goToMenu = () => {
     setRound(0);
     setScore(0);
     setGameStarted(false);
@@ -134,8 +153,20 @@ const handleTimeOut = async () => {
   };
 
   const handleExitGame = () => {
-    setModalVisible(true);
+    Alert.alert(
+      "Wyjście z gry",
+      "Czy na pewno chcesz wrócić do menu? Stracisz obecny wynik.",
+      [
+        { text: "Anuluj", style: "cancel" },
+        { 
+          text: "Wychodzę", 
+          style: "destructive", 
+          onPress: goToMenu 
+        }
+      ]
+    );
   };
+  
   const handleHintPress = () => {
     setShowHint(true);
   }
@@ -162,35 +193,12 @@ const handleTimeOut = async () => {
           <Lightbulb size={24} color="#4A5284" />
         </TouchableOpacity>
 
-     
         <GameTimer 
           key={round} 
           duration={ROUND_DURATION} 
           isActive={!showAnswer} 
           onTimeUp={handleTimeOut} 
         />
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalQuestion}>Czy na pewno chcesz zakończyć grę?</Text>
-              <Text style={styles.modalText}>Wszystkie postępy zostaną utracone</Text>
-              <TouchableOpacity style={styles.modalButton} onPress={() => { setModalVisible(false); resetGame(); }}>
-                <Text style={styles.modalButtonText}>Tak, zakończ grę</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton, styles.modalCancelButton]} onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalButtonText}>Anuluj</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-
-        </Modal>
 
         <GameHeader 
           currentFood={currentFood}
@@ -238,17 +246,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  exitButton: {
-    left: 15,
-  },
-  hintButton: {
-    right: 15,
-  },
-  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center'},
-  modalContent: { width: '80%', backgroundColor: '#E8E4BC', borderRadius: 20, padding: 20, alignItems: 'center', elevation: 10, shadowColor: '#4A5284', paddingHorizontal: 10 },
-  modalQuestion: { fontSize: 26, color: '#4A5284', marginBottom: 10, textAlign: 'center', fontWeight: 'bold' },
-  modalText: { fontSize: 14, color: '#77718C', marginBottom: 10, textAlign: 'center' },
-  modalButton: { backgroundColor: '#f55151', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 25, marginTop: 10 },
-  modalCancelButton: { backgroundColor: '#4A5284', marginTop: 10 },
-  modalButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' }
+  exitButton: { left: 15 },
+  hintButton: { right: 15 }
 });

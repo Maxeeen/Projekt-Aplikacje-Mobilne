@@ -9,7 +9,6 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/vector-icons": "^15.0.3",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.32",
     "expo-av": "~16.0.8",
